@@ -25,9 +25,7 @@ time_table_create = ("""
 
 # INSERT RECORDS
 
-songplay_table_insert = ("""\
-CREATE TABLE IF NOT EXISTS songplays (songplay_id int PRIMARY KEY NOT NULL UNIQUE,\
-start_time TIME, user_id int, level, song_id, artist_id, session_id, location, user_agent)
+songplay_table_insert = ("""
 """)
 
 user_table_insert = ("""
