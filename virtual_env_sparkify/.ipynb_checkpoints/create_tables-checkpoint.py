@@ -28,7 +28,7 @@ def create_database():
       cur = conn.cursor()
       
     except e:
-      print("error in creating databse")
+      print("error in creating database")
     
     return cur, conn
 
