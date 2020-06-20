@@ -12,6 +12,7 @@ time_table_drop = "DROP TABLE IF EXISTS time;"
 songplay_table_create = (""" CREATE TABLE IF NOT EXISTS songplays (songplay_id VARCHAR PRIMARY KEY, start_time int, user_id VARCHAR, level VARCHAR, song_id VARCHAR, artist_id VARCHAR, session_id VARCHAR, location VARCHAR, user_agent VARCHAR);
 """)
 
+# PRIMARY KEY (user_id, first_name)
 user_table_create = (""" CREATE TABLE IF NOT EXISTS users (user_id VARCHAR, first_name VARCHAR, last_name VARCHAR, gender VARCHAR, level VARCHAR);
 """)
 
