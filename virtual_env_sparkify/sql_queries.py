@@ -12,7 +12,7 @@ time_table_drop = "DROP TABLE IF EXISTS time;"
 songplay_table_create = (""" CREATE TABLE IF NOT EXISTS songplays (songplay_id VARCHAR PRIMARY KEY, start_time int, user_id VARCHAR, level VARCHAR, song_id VARCHAR, artist_id VARCHAR, session_id VARCHAR, location VARCHAR, user_agent VARCHAR);
 """)
 
-user_table_create = (""" CREATE TABLE IF NOT EXISTS users (user_id VARCHAR PRIMARY KEY, first_name VARCHAR, last_name VARCHAR, gender VARCHAR, level VARCHAR);
+user_table_create = (""" CREATE TABLE IF NOT EXISTS users (user_id VARCHAR, first_name VARCHAR, last_name VARCHAR, gender VARCHAR, level VARCHAR);
 """)
 
 song_table_create = ("""  CREATE TABLE IF NOT EXISTS songs (song_id VARCHAR PRIMARY KEY , title VARCHAR , artist_id VARCHAR , year int, duration float);
@@ -48,6 +48,10 @@ INSERT INTO time (start_time, hour, day, week, month, year, weekday)
 VALUES(%s, %s, %s, %s, %s, %s, %s)
 """)
 
+user_table_insert = ("""
+INSERT INTO users (user_id, first_name, last_name, gender, level)
+VALUES(%s, %s, %s, %s, %s)
+""")
 # FIND SONGS
 
 song_select = (""" SELECT * FROM songs;
