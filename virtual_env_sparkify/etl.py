@@ -7,6 +7,14 @@ from sql_queries import *
 
 def process_song_file(cur, filepath):
     # open song file
+    
+    song_list = []
+    
+    for root, dir, files in os.walk(filepath):
+      files = glob.glob(os.path.join(root, '*.json'))
+      for f in files:
+        song_list.append(os.path.abspath(f))
+        
     df = 
 
     # insert song record
@@ -20,6 +28,7 @@ def process_song_file(cur, filepath):
 
 def process_log_file(cur, filepath):
     # open log file
+    
     df = 
 
     # filter by NextSong action
@@ -83,7 +92,7 @@ def main():
     conn = psycopg2.connect("host=127.0.0.1 dbname=sparkifydb user=guest password=guest123")
     cur = conn.cursor()
 
-    process_data(cur, conn, filepath='data/song_data', func=process_song_file)
+    process_data(cur, conn, filepath='data/song_data', func=process_song_file) 
     process_data(cur, conn, filepath='data/log_data', func=process_log_file)
 
     conn.close()
