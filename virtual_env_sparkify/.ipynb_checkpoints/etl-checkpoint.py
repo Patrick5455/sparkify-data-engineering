@@ -8,15 +8,7 @@ from sql_queries import *
 def process_song_file(cur, filepath):
     # open song file
     
-    song_list = []
-    
-    for root, dirs, files in os.walk(filepath):
-      files = glob.glob(os.path.join(root, '*.json'))
-      for f in files:
-        song_list.append(os.path.abspath(f))
-    
-    song = song_list[0]
-    df = pd.read_json(song, lines = True)
+    df = pd.read_json(filepath,lines=True)
 
     # insert song record
     song_data = df[['song_id', 'title', 'artist_id', 'year',
@@ -33,22 +25,17 @@ def process_song_file(cur, filepath):
 def process_log_file(cur, filepath):
     # open log file
     
-    artist_list = []
-    
-    for root,dirs,files in os.walk(filepath):
-      files = glob.glob(os.path.join(root, '*.json'))
-      for f in files:
-        artist_list.append(os.path.abspath(f))
-    first_log_file = files[0]
-    df = pd.read_json(first_log_file, lines = True)
+    df = pd.read_json(filepath, lines = True)
     # filter by NextSong action
     df = df.query('page = NextSong')
     # convert timestamp column to datetime
     t = pd.to_datetime(df.ts, unit='ms')
     df.ts = t
+    
     # insert time data records
     time_data = [t, t.dt.hour, t.dt.day, t.dt.weekofyear,
                 t.dt.month, t.dt.year, t.dt.weekday]
+    
     # column_labels = ['timestamp','Hour', 
                    #     'Day','Month','Year''Weekday']'
     column_labels = ['timestamp','hour','day','weekofyear',
