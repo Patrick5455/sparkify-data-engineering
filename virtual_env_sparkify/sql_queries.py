@@ -106,10 +106,10 @@ time_table_insert = (""" INSERT INTO time
 # timestamp, user ID, level, song ID, artist ID, session ID, location, and user agent
 
 song_select = (""" SELECT s.song_id, s.artist_id FROM songs s
-                  JOIN artists  as ON as.artist_id
+                  JOIN artists  as ON s.artist_id = as.artist_id
                   WHERE s.title = %s AND
                   as.name = %s AND
-                  s.duration = %s;              
+                  s.duration = %s;            
 """)
 
 # QUERY LISTS
