@@ -4,14 +4,13 @@ import psycopg2
 import pandas as pd
 from sql_queries import *
 
-
 def process_song_file(cur, filepath):
     # open song file
     
     df = pd.read_json(filepath,lines=True)
 
     # insert song record
-    song_data = df[['song_id', 'title', 'artist_id', 'year',
+    song_data = df[['song_id', 'title', 'artist_id','year',
                     'duration']].values[0].tolist()
     cur.execute(song_table_insert, song_data)
     
@@ -19,7 +18,7 @@ def process_song_file(cur, filepath):
     artist_data =  df[['artist_id', 'artist_name',
                        'artist_location', 'artist_latitude',
                        'artist_longitude']].values[0].tolist()
-    cur.execute(artist_table_insert, artist_data)
+    cur.execute(artist_table_insert, artist_data) 
 
 
 def process_log_file(cur, filepath):
@@ -27,7 +26,7 @@ def process_log_file(cur, filepath):
     
     df = pd.read_json(filepath, lines = True)
     # filter by NextSong action
-    df = df.query('page = "NextSong"')
+    df = df[df['page']=='NextSong']
     # convert timestamp column to datetime
     t = pd.to_datetime(df.ts, unit='ms')
     df.ts = t
@@ -40,14 +39,14 @@ def process_log_file(cur, filepath):
                    #     'Day','Month','Year''Weekday']'
     column_labels = ['timestamp','hour','day','weekofyear',
                      'month','year','weekday']
-    time_df = dict(zip(column_labels, time_data))
+    time_df = pd.DataFrame(dict(zip(column_labels, time_data)))
 
     for i, row in time_df.iterrows():
         cur.execute(time_table_insert, list(row))
 
     # load user table
     user_df = df2[['userId','firstName',         'lastName','gender','level']]
-
+    
     # insert user records
     for i, row in user_df.iterrows():
         cur.execute(user_table_insert, row)
@@ -77,7 +76,7 @@ def process_data(cur, conn, filepath, func):
     all_files = []
     for root, dirs, files in os.walk(filepath):
         files = glob.glob(os.path.join(root,'*.json'))
-        for f in files :
+        for f in files:
             all_files.append(os.path.abspath(f))
 
     # get total number of files found
