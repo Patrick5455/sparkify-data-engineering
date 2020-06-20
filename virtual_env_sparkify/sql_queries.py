@@ -55,7 +55,7 @@ VALUES(%s, %s, %s, %s, %s)
 """)
 # FIND SONGS
 
-song_select = (""" SELECT * FROM songs;
+song_select = (""" SELECT song_id, artist_id FROM songs JOIN artists ON artist_id
 """)
 
 # QUERY LISTS
