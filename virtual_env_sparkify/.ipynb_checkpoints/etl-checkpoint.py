@@ -5,7 +5,19 @@ import pandas as pd
 from sql_queries import *
 
 def process_song_file(cur, filepath):
+  
+  """
+  This function would take the song filepath and
+  recursively parse each json files to DataFrame
+  It would also select columns relevant to song_table 
+  and artist_table respectively and insert rows from the specified
+  columns to each of the table using the cursor object passed 
+  in the argument.
+  
+  """
+  
     # open song file
+    
     
     df = pd.read_json(filepath,lines=True)
 
@@ -15,13 +27,30 @@ def process_song_file(cur, filepath):
     cur.execute(song_table_insert, song_data)
     
     # insert artist record
-    artist_data =  df[['artist_id', 'artist_name',
+    artist_data =  df[['artist_id','artist_name',
                        'artist_location', 'artist_latitude',
                        'artist_longitude']].values[0].tolist()
     cur.execute(artist_table_insert, artist_data) 
 
 
 def process_log_file(cur, filepath):
+  
+   """
+  This function would take the log filepath and
+  recursively parse each json files to DataFrame
+  
+  Only rows in page column where we have NextSong would be used.
+  We would query based on thsis condition.
+  
+  The function would then select columns relevant to time_table and 
+  songplays tbale, (in the case of time_table, the columns would
+  furher be converted to various time usints) and insert rows from
+  the specified
+  columns to each of the table using the cursor object passed 
+  in the argument.
+  
+  """
+  
     # open log file
     
     df = pd.read_json(filepath, lines = True)
@@ -45,7 +74,8 @@ def process_log_file(cur, filepath):
         cur.execute(time_table_insert, list(row))
 
     # load user table
-    user_df = df2[['userId','firstName',         'lastName','gender','level']]
+    user_df = df[['userId','firstName',     
+                  'lastName','gender','level']]
     
     # insert user records
     for i, row in user_df.iterrows():
@@ -72,6 +102,20 @@ def process_log_file(cur, filepath):
 
 
 def process_data(cur, conn, filepath, func):
+  
+  """
+  This function takes as pararmeetrs, a cursor & connection object,
+  a filepath to be processed and a corresponding function that would
+  process the specified filepaath.
+  
+  It would process the filepath to get all json files and append them
+  to a list that would be used by the specified funtion to use in its
+  parameter.
+  
+  
+  """
+  
+  
     # get all files matching extension from directory
     all_files = []
     for root, dirs, files in os.walk(filepath):
@@ -91,11 +135,28 @@ def process_data(cur, conn, filepath, func):
 
 
 def main():
-    conn = psycopg2.connect("host=127.0.0.1 dbname=sparkifydb user=guest password=guest123")
+  
+  
+  """
+  The main method serves as the entry point to this script.
+  It would be used to create a connection to the databsase
+  and get the conneciton and cursor object that would 
+  be used by other funtions. 
+  
+  It wouls also call the process data function twice to process the 
+  two filepaths that conatins our data. 
+  
+  
+  """
+  
+    conn = psycopg2.connect("host=127.0.0.1 dbname=sparkifydb
+                            user=guest password=guest123")
     cur = conn.cursor()
 
-    process_data(cur, conn, filepath='data/song_data', func=process_song_file) 
-    process_data(cur, conn, filepath='data/log_data', func=process_log_file)
+    process_data(cur, conn, filepath='data/song_data',
+                 func=process_song_file) 
+    process_data(cur, conn, filepath='data/log_data',
+                 func=process_log_file)
 
     conn.close()
 
